@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 
 import * as dotenv from "dotenv";
+import { getDatabase } from "firebase/database";
 dotenv.config();
 
 const firebaseConfig = {
@@ -15,4 +16,5 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+export const database = getDatabase(app);

@@ -1,8 +1,7 @@
 import express from "express";
 const router = express.Router();
-import { app } from "../../firebase.js";
+import { database } from "../../firebase.js";
 import {
-  getDatabase,
   push,
   ref,
   set,
@@ -12,7 +11,7 @@ import {
 } from "firebase/database";
 import { verifyToken } from "./auth.js";
 
-const database = getDatabase(app);
+
 const productCollections = "products/";
 const productRef = ref(database, productCollections);
 
