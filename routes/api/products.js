@@ -13,23 +13,23 @@ import {
 import { verifyToken } from "./auth.js";
 
 const database = getDatabase(app);
-const userCollections = "users/";
-const userRef = ref(database, userCollections);
+const productCollections = "products/";
+const productRef = ref(database, productCollections);
 
-//get all users
+//get all products
 router.get("/", verifyToken, (req, res) => {
   onValue(
-    userRef,
+    productRef,
     (snapshot) => {
       if (snapshot.exists()) {
-        const userList = [];
+        const productList = [];
         snapshot.forEach((data) => {
-          userList.push({ id: data.key, ...data.val() });
+          productList.push({ id: data.key, ...data.val() });
         });
-        console.log(userList);
-        res.json(userList);
+        console.log(productList);
+        res.json(productList);
       } else {
-        res.status(404).send({ error: "User database is Empty" });
+        res.status(404).send({ error: "product database is Empty" });
       }
     },
     {
@@ -38,11 +38,11 @@ router.get("/", verifyToken, (req, res) => {
   );
 });
 
-//get single user
+//get single product
 router.get("/:id", verifyToken, (req, res) => {
   const id = req.params.id;
   onValue(
-    ref(database, userCollections + id),
+    ref(database, productCollections + id),
     (snapshot) => {
       if (snapshot.exists()) {
         console.log(snapshot.val());
@@ -50,7 +50,7 @@ router.get("/:id", verifyToken, (req, res) => {
       } else {
         res
           .status(404)
-          .send({ error: "user does not exit with given id:" + id });
+          .send({ error: "product does not exit with given id:" + id });
       }
     },
     {
@@ -59,18 +59,18 @@ router.get("/:id", verifyToken, (req, res) => {
   );
 });
 
-//add new user
+//add new product
 router.post("/", verifyToken, (req, res) => {
-  const user = req.body;
+  const product = req.body;
   let errorString = "";
 
-  if (!user.name) errorString += "name not provided, ";
-  if (!user.email) errorString += "email not provided, ";
-  if (!user.age) errorString += "age not provided";
+  if (!product.title) errorString += "title is not provided, ";
+  if (!product.category) errorString += "category is not provided, ";
+  if (!product.price) errorString += "price is not provided";
 
   if (!errorString) {
-    set(push(userRef), user)
-      .then(() => res.send({ message: "User Added Successfully" }))
+    set(push(productRef), product)
+      .then(() => res.send({ message: "product Added Successfully" }))
       .catch((error) => {
         console.log(error);
         res.status(500).send({ error: error.message });
@@ -80,25 +80,25 @@ router.post("/", verifyToken, (req, res) => {
   }
 });
 
-//update user
+//update product
 router.put("/:id", verifyToken, (req, res) => {
-  const user = req.body;
+  const product = req.body;
   const id = req.params.id;
 
-  update(ref(database, userCollections + id), user)
-    .then(() => res.send({ message: "User Updated Successfully" }))
+  update(ref(database, productCollections + id), product)
+    .then(() => res.send({ message: "product Updated Successfully" }))
     .catch((error) => {
       console.log(err);
       res.status(500).send({ error: error.message });
     });
 });
 
-//delete user
+//delete product
 router.delete("/:id", verifyToken, (req, res) => {
   const id = req.params.id;
 
-  remove(ref(database, userCollections + id))
-    .then(() => res.send({ message: "User Deleted Successfully" }))
+  remove(ref(database, productCollections + id))
+    .then(() => res.send({ message: "product Deleted Successfully" }))
     .catch((error) => {
       console.log(err);
       res.status(500).send({ error: error.message });
