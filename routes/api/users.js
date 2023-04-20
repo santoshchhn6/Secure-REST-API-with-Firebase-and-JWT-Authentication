@@ -1,21 +1,14 @@
 import express from "express";
 const router = express.Router();
 import { database } from "../../firebase.js";
-import {
-  push,
-  ref,
-  set,
-  update,
-  remove,
-  onValue,
-} from "firebase/database";
+import { push, ref, set, update, remove, onValue } from "firebase/database";
 import { verifyToken } from "./auth.js";
 
 const userCollections = "users/";
 const userRef = ref(database, userCollections);
 
 //get all users
-router.get("/", verifyToken, (req, res) => {
+router.get("/", (req, res) => {
   onValue(
     userRef,
     (snapshot) => {
@@ -37,7 +30,7 @@ router.get("/", verifyToken, (req, res) => {
 });
 
 //get single user
-router.get("/:id", verifyToken, (req, res) => {
+router.get("/:id", (req, res) => {
   const id = req.params.id;
   onValue(
     ref(database, userCollections + id),

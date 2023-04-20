@@ -1,22 +1,14 @@
 import express from "express";
 const router = express.Router();
 import { database } from "../../firebase.js";
-import {
-  push,
-  ref,
-  set,
-  update,
-  remove,
-  onValue,
-} from "firebase/database";
+import { push, ref, set, update, remove, onValue } from "firebase/database";
 import { verifyToken } from "./auth.js";
-
 
 const productCollections = "products/";
 const productRef = ref(database, productCollections);
 
 //get all products
-router.get("/", verifyToken, (req, res) => {
+router.get("/", (req, res) => {
   onValue(
     productRef,
     (snapshot) => {
@@ -38,7 +30,7 @@ router.get("/", verifyToken, (req, res) => {
 });
 
 //get single product
-router.get("/:id", verifyToken, (req, res) => {
+router.get("/:id", (req, res) => {
   const id = req.params.id;
   onValue(
     ref(database, productCollections + id),

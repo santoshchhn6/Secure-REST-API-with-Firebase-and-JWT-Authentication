@@ -8,7 +8,6 @@ import {
 import jwt from "jsonwebtoken";
 
 const auth = getAuth();
-let secretKey = "qasdfwerlWERAdfadf";
 
 //user register
 router.post("/register", function (req, res) {
@@ -37,13 +36,13 @@ router.post("/login", (req, res) => {
   if (email && password) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        secretKey = userCredential.user.accessToken;
-        console.log(secretKey);
+        // const userToken = userCredential.user.accessToken;
+        // console.log(userToken);
 
         jwt.sign(
           { email, password },
-          secretKey,
-          { expiresIn: "1800s" },
+          process.env.JWT_SECRETE_KEY,
+          { expiresIn: "1d" },
           (error, token) => {
             if (error) res.send({ error });
             else {
@@ -66,7 +65,7 @@ export function verifyToken(req, res, next) {
   const bearerHeader = req.headers["authorization"];
   if (typeof bearerHeader !== "undefined") {
     const token = bearerHeader.split(" ")[1];
-    jwt.verify(token, secretKey, (error, authData) => {
+    jwt.verify(token, process.env.JWT_SECRETE_KEY, (error, authData) => {
       if (error) res.status(400).send({ error: "token is not valid" });
       else {
         console.log({ authData });
